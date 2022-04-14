@@ -1,0 +1,31 @@
+name: Build Installer
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  workflow_dispatch:
+
+
+env:
+  ARTIFACT_NAME: installer
+
+jobs:
+  buildAndPackage:
+    runs-on: windows-latest
+    steps:
+      - name: 'checkout source code'
+        uses: actions/checkout@v2
+
+      - name: 'setup dotnet environment'
+        uses: actions/setup-dotnet@v2.0.0
+      
+      - name: 'build solution'
+        run: dotnet build --configuration Release
+
+      - name: 'upload artifacts'
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ github.workspace }}\MyProduct.msi
+          retention-days: 5
